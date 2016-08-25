@@ -106,7 +106,7 @@ public class ChemTools extends JFrame {
         		        s += formula.charAt(i);
         		    }
         		}
-        		elements.add(s);
+        		elements.add(s);   /////////////////LOOOKATME //////////////////////////////////this one :P
         		
         		for (int i=0; i<elements.size(); i++) {
         		    System.out.print(elements.get(i) + " ");
