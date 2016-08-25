@@ -1,7 +1,8 @@
 # ChemTools
 
-This is a readme :D
+This is a shared repository maintained by Charles Kulick and Ethan MacDonald.
+It contains code for making A.P. Chemistry easier in any way possible. 
 
-No it's not! I'm not a readme, I'M A PERSON! PLEASE HELP!
+Contact: ethanmac9@gmail.com and #Charles add your email if you want
 
-BACK BACK YOU FILTHY COMPUTER!
+Idk what else goes in a readme?
