@@ -1,4 +1,4 @@
-# ChemTools
+# A.P. Chemistry Tools
 
 This is a shared repository maintained by Charles Kulick and Ethan MacDonald.
 It contains code for making A.P. Chemistry easier in any way possible. 
