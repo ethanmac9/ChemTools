@@ -1,5 +1,5 @@
 //A.P. Chem. Chemical Formula Parsing Tools V0.1.4
-//Code by Ethan MacDonald on 8/24/16
+//Code by Ethan MacDonald and Charles Kulick
 //Currently the main functionality works, and the additional displays are yet to be implemented. 
 //KNOWN BUG: If an atom appears more than once in a formula, it is not stacked with its previous instance.
 
@@ -106,7 +106,7 @@ public class ChemTools extends JFrame {
         		        s += formula.charAt(i);
         		    }
         		}
-        		elements.add(s);   /////////////////LOOOKATME //////////////////////////////////this one :P
+        		elements.add(s);   
         		
         		for (int i=0; i<elements.size(); i++) {
         		    System.out.print(elements.get(i) + " ");
@@ -120,19 +120,23 @@ public class ChemTools extends JFrame {
         		final List list = new List();
                 list.setFont(new Font("Century Gothic", Font.PLAIN, 25));
                 list.setBackground(Color.WHITE);
-                list.setBounds(12, 193, 145, 262);
+                list.setBounds(12, 193, 145, 262);             
+                ArrayList<String[]> splitElements = new ArrayList<>();
+                
         		for(int j=0; j<elements.size(); j++){
-        			
-        			int test = elements.size();
-        			System.out.println(test);
-        			String[] finished = splitElement(elements.get(j));
-        			if(finished.length<=1){
-        				list.add(finished[0] + " : 1");
-        			}
-        			else if(finished.length>1){
-        				list.add(finished[0] + " : " + finished[1]);
-        			}
+        			String[] split = splitElement(elements.get(j));
+        			splitElements.add(split);
+        			//System.out.print(splitElements.get(j)[0]); 
+        			//System.out.println(splitElements.get(j)[1]);
+    				list.add(split[0] + " : " + split[1]);		
         		}
+        		
+        		ArrayList<String> atoms = explode(splitElements); //An array that contains all the atoms from the inputed formula
+        		for(int x=0; x<atoms.size(); x++){                //i.e. H2O = {"H","H","O"}
+        			System.out.print(atoms.get(x) + " ");
+        		}
+        		
+        		
         		contentPane.add(list);
                 
         		//Mass text field 
@@ -157,7 +161,7 @@ public class ChemTools extends JFrame {
                 textField_1.setColumns(10);
                 contentPane.setVisible(true);
                 
-                //Resets the list the the main text field is clicked 
+                //Resets the list the when main text field is clicked 
                 txtEnterChemicalFormula.addMouseListener(new MouseAdapter(){
                     @Override
                     public void mouseClicked(MouseEvent e){
@@ -207,9 +211,26 @@ public class ChemTools extends JFrame {
 			return split;
 		}
 		else{
-			String[] split = {e};
+			String[] split = {e,"1"};
 			return split;
 		}
 	}
+	//takes an arraylist that contains arrays of the element chunks created by splitElement 
+	public static ArrayList<String> explode(ArrayList<String[]> splitElements){	
+		ArrayList<String> atoms = new ArrayList<>();
+		for(int i=0; i<splitElements.size(); i++){
+			String timesString = splitElements.get(i)[1];
+			int times = Integer.parseInt(timesString);
+			for(int j=0; j<times; j++){
+				String element = splitElements.get(i)[0];
+				atoms.add(element);
+			}
+		}
+		return atoms;
+	}
+	
+	
+	
+	
 	
 }
