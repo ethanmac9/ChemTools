@@ -1,22 +1,15 @@
 //A.P. Chem. Chemical Formula Parsing Tools V0.1.5
 //Code by Ethan MacDonald and Charles Kulick
 //Currently the main functionality works, and the additional displays are yet to be implemented. 
-//KNOWN BUG: FIXED :D XXIf an atom appears more than once in a formula, it is not stacked with its previous instance.XX
 
 package chemTools;
 import java.util.*;
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTextField;
-import javax.swing.JSpinner;
-import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JFrame;
@@ -24,18 +17,9 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import javax.swing.BoxLayout;
 import java.awt.Component;
 import java.awt.Font;
 import javax.swing.JLabel;
-import javax.swing.JTable;
-import javax.swing.border.CompoundBorder;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.JTree;
-import javax.swing.JComboBox;
 import java.awt.List;
 import java.awt.Color;
 
@@ -50,7 +34,7 @@ public class ChemTools extends JFrame {
 	}
 	public ChemTools() {
 		
-		//Main frame setup
+		//Main Jframe setup
 		setTitle("A.P. Chem. Molecule Parsing Tool");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 500, 500);
@@ -60,23 +44,24 @@ public class ChemTools extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
         
-        //Text field setup
+        //Input text field setup
         final JTextField txtEnterChemicalFormula = new JTextField("Enter chemical formula here...");
         txtEnterChemicalFormula.setHorizontalAlignment(SwingConstants.LEFT);
         txtEnterChemicalFormula.setFont(new Font("Century Gothic", Font.PLAIN, 25));
         txtEnterChemicalFormula.setBounds(12, 13, 458, 48);
         txtEnterChemicalFormula.setAlignmentX(Component.LEFT_ALIGNMENT);
         txtEnterChemicalFormula.addMouseListener(new MouseAdapter(){
-            @Override//removes the text in the main text field setup
-            public void mouseClicked(MouseEvent e){
+            @Override
+            public void mouseClicked(MouseEvent e){ //removes the default text in the main text field setup
                 txtEnterChemicalFormula.setText("");
                 
             }
         });
         contentPane.setLayout(null);
         contentPane.add(txtEnterChemicalFormula);
+        
         //Sets up the parse button. All the programs processing happens when the the button is pressed, and
-        // therefore almost all code related to the processing is contained in the button's action listener.
+        //therefore almost all code related to the processing is contained in the button's action listener.
         JButton btnNewButton = new JButton("Parse Formula");
         btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 18));
         btnNewButton.setBounds(12, 74, 160, 48);
@@ -84,18 +69,16 @@ public class ChemTools extends JFrame {
         contentPane.add(btnNewButton);
         btnNewButton.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent arg0) {
-        		 		
-        		//The work gets done in here
         		//Gets the user's input
         		String inputString = txtEnterChemicalFormula.getText();
-        		//System.out.println(inputString);
         		
-        		//Parses the formula
+        		//Parses the formula into blocks of element and number. Single atoms are not yet given a 1
         		Scanner sc = new Scanner(System.in);
         		ArrayList<String> elements = new ArrayList<>();
         		String formula = inputString;
         		String s = "";
         		
+        		//Unfathomable witchcraft 
         		for (int i=0; i<formula.length(); i++) {
         		    if (Character.isUpperCase(formula.charAt(i))) {
         		        if (!s.isEmpty()) {
@@ -107,15 +90,7 @@ public class ChemTools extends JFrame {
         		    }
         		}
         		elements.add(s);   
-        		
-        		for (int i=0; i<elements.size(); i++) {
-        		    System.out.print(elements.get(i) + " ");
-        		}
-        		
-        		System.out.println();
-    
-        		//Further processing here VVVVVV
-        		
+
         		//Handles the list which contains the kind and amount of atoms
         		final List list = new List();
                 list.setFont(new Font("Century Gothic", Font.PLAIN, 25));
@@ -123,16 +98,17 @@ public class ChemTools extends JFrame {
                 list.setBounds(12, 193, 145, 262);             
                 ArrayList<String[]> splitElements = new ArrayList<>();
                 
+                //Uses the splitElement method to break the blocks of e.g. "C6" in arrays of e.g. {"C","6"}
         		for(int j=0; j<elements.size(); j++){
         			String[] split = splitElement(elements.get(j));
-        			splitElements.add(split);
-        			//System.out.print(splitElements.get(j)[0]); 
-        			//System.out.println(splitElements.get(j)[1]);
-    				//list.add(split[0] + " : " + split[1]);		
+        			splitElements.add(split);	
         		}
         		
-        		ArrayList<String> atoms = explode(splitElements); //An array that contains all the atoms from the inputed formula
+        		//Uses the explode method to create one array list which contains all the individual atoms in the inputed formula
+        		//represented by their symbol. e.g. <{"H","2"},{"O","1"}> becomes <"H","H","O">
+        		ArrayList<String> atoms = explode(splitElements); 
         		
+        		//This is where Chuck invoked the black magic of 23 to format the output from the trash I gave him. 
         		for(int x = 0;  x< atoms.size(); x++){
         			String test = atoms.get(x);
         			if(test.equals("")){
@@ -147,26 +123,27 @@ public class ChemTools extends JFrame {
         					//j--;
         				}
         			}
+        			//Adds the formatted output to the JList
         			list.add(test + ": " + number);
         		}
-        		
+        		//Adds the JList to the screen
         		contentPane.add(list);
                 
-        		//Mass text field 
+        		//Mass text field setup
                 txtamu = new JTextField();
                 txtamu.setText("0.0000amu");
                 txtamu.setBounds(248, 222, 116, 22);
                 contentPane.add(txtamu);
                 txtamu.setColumns(10);
                 
-                //Num of unique atoms
+                //Num of unique atoms setup
                 textField = new JTextField();
                 textField.setText("0");
                 textField.setBounds(248, 286, 116, 22);
                 contentPane.add(textField);
                 textField.setColumns(10);
                 
-                //Num of atoms
+                //Num of atoms setup
                 textField_1 = new JTextField();
                 textField_1.setText("0");
                 textField_1.setBounds(248, 352, 116, 22);
@@ -174,7 +151,7 @@ public class ChemTools extends JFrame {
                 textField_1.setColumns(10);
                 contentPane.setVisible(true);
                 
-                //Resets the list the when main text field is clicked 
+                //Resets the list the when main text field is clicked. For some reason it doesn't update if this isn't done 
                 txtEnterChemicalFormula.addMouseListener(new MouseAdapter(){
                     @Override
                     public void mouseClicked(MouseEvent e){
@@ -184,8 +161,8 @@ public class ChemTools extends JFrame {
                 });
         	}
         });
+        //Labels for the GUI//
         
-        //Labels for the GUI
         JLabel lblResults = new JLabel("R E S U L T S");
         lblResults.setFont(new Font("Century Gothic", Font.PLAIN, 19));
         lblResults.setHorizontalAlignment(SwingConstants.CENTER);
@@ -240,10 +217,5 @@ public class ChemTools extends JFrame {
 			}
 		}
 		return atoms;
-	}
-	
-	
-	
-	
-	
+	}	
 }
