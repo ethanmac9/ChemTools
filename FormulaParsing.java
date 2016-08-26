@@ -1,6 +1,7 @@
-//A.P. Chem. Chemical Formula Parsing Tools V0.1.5.2
+//A.P. Chem. Chemical Formula Parsing Tools V0.1.6
 //Code by Ethan MacDonald and Chuck8521
-//Currently the main functionality and the atomic mass display works, and the additional displays are yet to be implemented. 
+//Currently the main functionality, the atomic mass display, and the number of atoms display works, and the 
+//additional displays are yet to be implemented. 
 
 package chemTools;
 import java.util.*;
@@ -297,7 +298,8 @@ public class ChemTools extends JFrame {
                 
                 //Num of atoms setup
                 textField_1 = new JTextField();
-                textField_1.setText("0");
+                String numAtoms = (Integer.toString(atoms.size()));
+                textField_1.setText(numAtoms);
                 textField_1.setBounds(333, 325, 116, 22);
                 contentPane.add(textField_1);
                 textField_1.setColumns(10);
