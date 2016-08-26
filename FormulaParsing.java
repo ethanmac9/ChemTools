@@ -24,6 +24,51 @@ import java.awt.List;
 import java.awt.Color;
 
 public class ChemTools extends JFrame {
+	
+	//Initialize the map of elements and their amus
+	private static final Map<String, Double> amu;
+    	static {
+        Map<String, Double> temp = new HashMap<String, Double>();
+        temp.put("H", 1.008);
+        temp.put("He", 4.003);
+        temp.put("Li", 6.941);
+        temp.put("Be", 9.012);
+        temp.put("B", 10.81);
+        temp.put("C", 12.01);
+        temp.put("N", 14.01);
+        temp.put("O", 16.0);
+        temp.put("F", 19.0);
+        temp.put("Ne", 20.18);
+        temp.put("Na", 22.99);
+        temp.put("Mg", 24.31);
+        temp.put("Al", 26.98);
+        temp.put("Si", 28.09);
+        temp.put("P", 30.97);
+        temp.put("S", 32.07);
+        temp.put("Cl", 35.45);
+        temp.put("Ar", 39.95);
+        temp.put("K", 39.1);
+        temp.put("Ca", 40.08);
+        temp.put("Sc", 44.96);
+        temp.put("Ti", 47.88);
+        temp.put("V", 50.94);
+        temp.put("Cr", 52.0);
+        temp.put("Mn", 54.94);
+        temp.put("Fe", 55.85);
+        temp.put("Co", 58.93);
+        temp.put("Ni", 58.69);
+        temp.put("Cu", 63.55);
+        temp.put("Zn", 65.38);
+        temp.put("Ga", 69.72);
+        temp.put("Ge", 72.59);
+        temp.put("As", 74.92);
+        temp.put("Se", 78.96);
+        temp.put("Br", 79.9);
+        temp.put("Kr", 83.8);
+        amu = Collections.unmodifiableMap(temp);
+	}
+	
+	
 	private JPanel contentPane;
 	private JTextField txtamu;
 	private JTextField textField;
@@ -106,7 +151,8 @@ public class ChemTools extends JFrame {
         		
         		//Uses the explode method to create one array list which contains all the individual atoms in the inputed formula
         		//represented by their symbol. e.g. <{"H","2"},{"O","1"}> becomes <"H","H","O">
-        		ArrayList<String> atoms = explode(splitElements); 
+        		ArrayList<String> atoms = explode(splitElements);
+        		
         		
         		//The stage is set for generating output thanks to Ethan's general purpose explode method
         		for(int x = 0;  x< atoms.size(); x++){
