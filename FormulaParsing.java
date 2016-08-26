@@ -255,24 +255,24 @@ public class ChemTools extends JFrame {
         			list.add(test + ": " + number);
         			
         			if(amu.containsKey(test)){
-        				int mass = amu.get(test) * number;
+        				double mass = amu.get(test) * number;
         				//TODO - Add code to generate % of each element by mass in compound, if desired
+        				//This sounds like a good idea
         				totalMass += mass;
         			} else {
         				System.out.println("There is no such element as: " + test + ". Please check your input for errors.");
         			}
         		}
-        		
-        		//Ethan - you can add this to the GUI, it doesn't need to be printed right here
-        		System.out.println("The total amu of this molecule is " + totalMass);
-        		
+        		//Formats the output so it can be added to the JTextField display
+        		String totalMassString = Double.toString(totalMass);
+        		String amuOutput = totalMassString + "amu";
         		
         		//Adds the JList to the screen
         		contentPane.add(list);
                 
         		//Mass text field setup
                 txtamu = new JTextField();
-                txtamu.setText("0.0000amu");
+                txtamu.setText(amuOutput);
                 txtamu.setBounds(248, 222, 116, 22);
                 contentPane.add(txtamu);
                 txtamu.setColumns(10);
