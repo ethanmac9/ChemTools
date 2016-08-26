@@ -135,13 +135,16 @@ public class ChemTools extends JFrame {
         		
         		for(int x = 0;  < atoms.size(); x++){
         			String test = atoms.get(x);
+        			if(test.equals("")){
+        				continue;
+        			}
         			int number = 1;
         			for(int j = x + 1; j < atoms.size(); j++){
         				String test2 = atoms.get(j);
         				if(test.equals(test2)){
         					number++;
-        					atoms.remove(j);
-        					j--;
+        					atoms.set(j, "");
+        					//j--;
         				}
         			}
         			System.out.println(test + ": " + number);
