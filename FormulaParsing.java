@@ -1,5 +1,5 @@
 //A.P. Chem. Chemical Formula Parsing Tools V0.1.5.1
-//Code by Ethan MacDonald and Charles Kulick
+//Code by Ethan MacDonald and Chuck8521
 //Currently the main functionality works, and the additional displays are yet to be implemented. 
 
 package chemTools;
@@ -234,7 +234,7 @@ public class ChemTools extends JFrame {
         		//Uses the explode method to create one array list which contains all the individual atoms in the inputed formula
         		//represented by their symbol. e.g. <{"H","2"},{"O","1"}> becomes <"H","H","O">
         		ArrayList<String> atoms = explode(splitElements);
-        		
+        		double totalMass = 0.0;
         		
         		//The stage is set for generating output thanks to Ethan's general purpose explode method
         		for(int x = 0;  x< atoms.size(); x++){
@@ -253,7 +253,20 @@ public class ChemTools extends JFrame {
         			}
         			//Adds the formatted output to the JList
         			list.add(test + ": " + number);
+        			
+        			if(amu.containsKey(test)){
+        				int mass = amu.get(test) * number;
+        				//TODO - Add code to generate % of each element by mass in compound, if desired
+        				totalMass += mass;
+        			} else {
+        				System.out.println("There is no such element as: " + test + ". Please check your input for errors.");
+        			}
         		}
+        		
+        		//Ethan - you can add this to the GUI, it doesn't need to be printed right here
+        		System.out.println("The total amu of this molecule is " + totalMass);
+        		
+        		
         		//Adds the JList to the screen
         		contentPane.add(list);
                 
