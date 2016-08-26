@@ -108,19 +108,19 @@ public class ChemTools extends JFrame {
         		//represented by their symbol. e.g. <{"H","2"},{"O","1"}> becomes <"H","H","O">
         		ArrayList<String> atoms = explode(splitElements); 
         		
-        		//This is where Chuck invoked the black magic of 23 to format the output from the trash I gave him. 
+        		//The stage is set for generating output thanks to Ethan's general purpose explode method
         		for(int x = 0;  x< atoms.size(); x++){
         			String test = atoms.get(x);
         			if(test.equals("")){
+        				//The index we're searching contained a duplicate of a previous element - we don't need to do anything
         				continue;
         			}
-        			int number = 1;
+        			int number = 1; //There is at least 1 of this atom - each time we find another, we increase this
         			for(int j = x + 1; j < atoms.size(); j++){
         				String test2 = atoms.get(j);
         				if(test.equals(test2)){
         					number++;
-        					atoms.set(j, "");
-        					//j--;
+        					atoms.set(j, "");//So this index is not analyzed when the outer for loop comes to it
         				}
         			}
         			//Adds the formatted output to the JList
