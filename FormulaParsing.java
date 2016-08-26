@@ -1,7 +1,7 @@
-//A.P. Chem. Chemical Formula Parsing Tools V0.1.4
+//A.P. Chem. Chemical Formula Parsing Tools V0.1.5
 //Code by Ethan MacDonald and Charles Kulick
 //Currently the main functionality works, and the additional displays are yet to be implemented. 
-//KNOWN BUG: If an atom appears more than once in a formula, it is not stacked with its previous instance.
+//KNOWN BUG: FIXED :D XXIf an atom appears more than once in a formula, it is not stacked with its previous instance.XX
 
 package chemTools;
 import java.util.*;
@@ -128,12 +128,12 @@ public class ChemTools extends JFrame {
         			splitElements.add(split);
         			//System.out.print(splitElements.get(j)[0]); 
         			//System.out.println(splitElements.get(j)[1]);
-    				list.add(split[0] + " : " + split[1]);		
+    				//list.add(split[0] + " : " + split[1]);		
         		}
         		
         		ArrayList<String> atoms = explode(splitElements); //An array that contains all the atoms from the inputed formula
         		
-        		for(int x = 0;  < atoms.size(); x++){
+        		for(int x = 0;  x< atoms.size(); x++){
         			String test = atoms.get(x);
         			if(test.equals("")){
         				continue;
@@ -147,7 +147,7 @@ public class ChemTools extends JFrame {
         					//j--;
         				}
         			}
-        			System.out.println(test + ": " + number);
+        			list.add(test + ": " + number);
         		}
         		
         		contentPane.add(list);
