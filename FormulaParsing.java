@@ -132,10 +132,20 @@ public class ChemTools extends JFrame {
         		}
         		
         		ArrayList<String> atoms = explode(splitElements); //An array that contains all the atoms from the inputed formula
-        		for(int x=0; x<atoms.size(); x++){                //i.e. H2O = {"H","H","O"}
-        			System.out.print(atoms.get(x) + " ");
-        		}
         		
+        		for(int x = 0;  < atoms.size(); x++){
+        			String test = atoms.get(x);
+        			int number = 1;
+        			for(int j = x + 1; j < atoms.size(); j++){
+        				String test2 = atoms.get(j);
+        				if(test.equals(test2)){
+        					number++;
+        					atoms.remove(j);
+        					j--;
+        				}
+        			}
+        			System.out.println(test + ": " + number);
+        		}
         		
         		contentPane.add(list);
                 
