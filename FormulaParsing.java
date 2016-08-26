@@ -1,4 +1,4 @@
-//A.P. Chem. Chemical Formula Parsing Tools V0.1.5
+//A.P. Chem. Chemical Formula Parsing Tools V0.1.5.1
 //Code by Ethan MacDonald and Charles Kulick
 //Currently the main functionality works, and the additional displays are yet to be implemented. 
 
@@ -28,44 +28,126 @@ public class ChemTools extends JFrame {
 	//Initialize the map of elements and their amus
 	private static final Map<String, Double> amu;
     	static {
-        Map<String, Double> temp = new HashMap<String, Double>();
-        temp.put("H", 1.008);
-        temp.put("He", 4.003);
-        temp.put("Li", 6.941);
-        temp.put("Be", 9.012);
-        temp.put("B", 10.81);
-        temp.put("C", 12.01);
-        temp.put("N", 14.01);
-        temp.put("O", 16.0);
-        temp.put("F", 19.0);
-        temp.put("Ne", 20.18);
-        temp.put("Na", 22.99);
-        temp.put("Mg", 24.31);
-        temp.put("Al", 26.98);
-        temp.put("Si", 28.09);
-        temp.put("P", 30.97);
-        temp.put("S", 32.07);
-        temp.put("Cl", 35.45);
-        temp.put("Ar", 39.95);
-        temp.put("K", 39.1);
-        temp.put("Ca", 40.08);
-        temp.put("Sc", 44.96);
-        temp.put("Ti", 47.88);
-        temp.put("V", 50.94);
-        temp.put("Cr", 52.0);
-        temp.put("Mn", 54.94);
-        temp.put("Fe", 55.85);
-        temp.put("Co", 58.93);
-        temp.put("Ni", 58.69);
-        temp.put("Cu", 63.55);
-        temp.put("Zn", 65.38);
-        temp.put("Ga", 69.72);
-        temp.put("Ge", 72.59);
-        temp.put("As", 74.92);
-        temp.put("Se", 78.96);
-        temp.put("Br", 79.9);
-        temp.put("Kr", 83.8);
-        amu = Collections.unmodifiableMap(temp);
+        Map<String, Double> mass = new HashMap<String, Double>();
+        mass.put("H", 1.008);
+        mass.put("He", 4.003); //End period 1
+        mass.put("Li", 6.941);
+        mass.put("Be", 9.012);
+        mass.put("B", 10.81);
+        mass.put("C", 12.01);
+        mass.put("N", 14.01);
+        mass.put("O", 16.0);
+        mass.put("F", 19.0);
+        mass.put("Ne", 20.18); //End period 2
+        mass.put("Na", 22.99);
+        mass.put("Mg", 24.31);
+        mass.put("Al", 26.98);
+        mass.put("Si", 28.09);
+        mass.put("P", 30.97);
+        mass.put("S", 32.07);
+        mass.put("Cl", 35.45);
+        mass.put("Ar", 39.95); //End period 3
+        mass.put("K", 39.1);
+        mass.put("Ca", 40.08);
+        mass.put("Sc", 44.96);
+        mass.put("Ti", 47.88);
+        mass.put("V", 50.94);
+        mass.put("Cr", 52.0);
+        mass.put("Mn", 54.94);
+        mass.put("Fe", 55.85);
+        mass.put("Co", 58.93);
+        mass.put("Ni", 58.69);
+        mass.put("Cu", 63.55);
+        mass.put("Zn", 65.38);
+        mass.put("Ga", 69.72);
+        mass.put("Ge", 72.59);
+        mass.put("As", 74.92);
+        mass.put("Se", 78.96);
+        mass.put("Br", 79.9);
+        mass.put("Kr", 83.8); //End period 4
+        mass.put("Rb", 85.468);
+        mass.put("Sr", 87.62);
+        mass.put("Y", 88.906);
+        mass.put("Zr", 91.224);
+        mass.put("Nb", 92.906);
+        mass.put("Mo", 95.96);
+        mass.put("Te", 98.0); ////Artificial  
+        mass.put("Ru", 101.07);
+        mass.put("Rh", 102.91);
+        mass.put("Pd", 106.42);
+        mass.put("Ag", 107.87);
+        mass.put("Cd", 112.41);
+        mass.put("In", 114.82);
+        mass.put("Sn", 118.71);
+        mass.put("Sb", 121.76);
+        mass.put("Te", 127.60);
+        mass.put("I", 126.90);
+        mass.put("Xe", 131.29); //End period 5
+        mass.put("Cs", 131.91);
+        mass.put("Ba", 137.33);
+	        mass.put("La", 138.91); 
+	        mass.put("Ce", 140.12);
+	        mass.put("Pr", 140.91);
+	        mass.put("Nd", 144.24);
+	        mass.put("Pm", 145.0); ////Artificial  
+	        mass.put("Sm", 150.36);
+	        mass.put("Eu", 151.96);
+	        mass.put("Gd", 157.25);
+	        mass.put("Tb", 158.93);
+	        mass.put("Dy", 162.50);
+	        mass.put("Ho", 164.93);
+	        mass.put("Er", 167.26);
+	        mass.put("Tm", 168.93);
+	        mass.put("Yb", 173.05);
+	        mass.put("Lu", 174.97); //End lanthanides
+        mass.put("Hf", 178.49);
+        mass.put("Ta", 180.95);
+        mass.put("W", 183.84);
+        mass.put("Re", 186.21);
+        mass.put("Os", 190.23);
+        mass.put("Ir", 192.22);
+        mass.put("Pt", 195.08);
+        mass.put("Au", 196.97);
+        mass.put("Hg", 200.59);
+        mass.put("Tl", 204.38);
+        mass.put("Pb", 207.2);
+        mass.put("Bi", 208.98);
+        mass.put("Po", 209.0); //End stable elements 
+        mass.put("At", 210.0);
+        mass.put("Rn", 222.0); //End period 6
+        mass.put("Fr", 223.0);
+        mass.put("Ra", 226.0);
+        	mass.put("Ac", 227.0);
+        	mass.put("Th", 232.04);
+        	mass.put("Pa", 231.04);
+        	mass.put("U", 238.03); //End naturally occurring elements
+        	mass.put("Np", 237.0); 
+        	mass.put("Pu", 244.0);
+        	mass.put("Am", 243.0);
+        	mass.put("Cm", 247.0);
+        	mass.put("Bk", 247.0);
+        	mass.put("Cf", 251.0);
+        	mass.put("Es", 252.0);
+        	mass.put("Fm", 257.0);
+        	mass.put("Md", 258.0);
+        	mass.put("No", 259.0);
+        	mass.put("Lr", 262.0); //End Actinides 
+    	mass.put("Rf", 267.0);
+    	mass.put("Db", 268.0);
+    	mass.put("Sg", 271.0);
+    	mass.put("Bh", 272.0);
+    	mass.put("Hs", 277.0);
+    	mass.put("Mt", 276.0);
+    	mass.put("Ds", 281.0);
+    	mass.put("Rg", 280.0);
+    	mass.put("Cn", 285.0);
+    	//mass.put("Uut", ?); //Theoretical 
+    	mass.put("Fl", 287.0);
+    	//mass.put("Uup", ?); //Theoretical 
+    	mass.put("Lv", 291.0);
+    	//mass.put("Uus", ?); //Theoretical 
+    	//mass.put("Uuo", ?); //Theoretical //End period 7
+        amu = Collections.unmodifiableMap(mass);
 	}
 	
 	
