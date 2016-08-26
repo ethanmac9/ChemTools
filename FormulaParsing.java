@@ -1,6 +1,6 @@
-//A.P. Chem. Chemical Formula Parsing Tools V0.1.5.1
+//A.P. Chem. Chemical Formula Parsing Tools V0.1.5.2
 //Code by Ethan MacDonald and Chuck8521
-//Currently the main functionality works, and the additional displays are yet to be implemented. 
+//Currently the main functionality and the atomic mass display works, and the additional displays are yet to be implemented. 
 
 package chemTools;
 import java.util.*;
@@ -22,6 +22,10 @@ import java.awt.Font;
 import javax.swing.JLabel;
 import java.awt.List;
 import java.awt.Color;
+import javax.swing.JList;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.LineBorder;
 
 public class ChemTools extends JFrame {
 	
@@ -150,7 +154,6 @@ public class ChemTools extends JFrame {
         amu = Collections.unmodifiableMap(mass);
 	}
 	
-	
 	private JPanel contentPane;
 	private JTextField txtamu;
 	private JTextField textField;
@@ -181,7 +184,6 @@ public class ChemTools extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e){ //removes the default text in the main text field setup
                 txtEnterChemicalFormula.setText("");
-                
             }
         });
         contentPane.setLayout(null);
@@ -218,11 +220,19 @@ public class ChemTools extends JFrame {
         		}
         		elements.add(s);   
 
+        		//Here is your new list Chuck///////////////////////////////////////////////////////////////////////////////////////////////////
+        		//You can add items to the list with percentList.add(STRING);
+        		//the list is automatically cleared every time another formula is entered. 
+        		final List percentList = new List();
+                percentList.setFont(new Font("Century Gothic", Font.PLAIN, 24));
+                percentList.setBackground(Color.WHITE);
+                percentList.setBounds(146, 193, 128, 262);
+        		
         		//Handles the list which contains the kind and amount of atoms
         		final List list = new List();
-                list.setFont(new Font("Century Gothic", Font.PLAIN, 25));
+                list.setFont(new Font("Century Gothic", Font.PLAIN, 24));
                 list.setBackground(Color.WHITE);
-                list.setBounds(12, 193, 145, 262);             
+                list.setBounds(12, 193, 128, 262);  
                 ArrayList<String[]> splitElements = new ArrayList<>();
                 
                 //Uses the splitElement method to break the blocks of e.g. "C6" in arrays of e.g. {"C","6"}
@@ -267,27 +277,28 @@ public class ChemTools extends JFrame {
         		String totalMassString = Double.toString(totalMass);
         		String amuOutput = totalMassString + "amu";
         		
-        		//Adds the JList to the screen
+        		//Adds the Lists to the screen
         		contentPane.add(list);
-                
+        		contentPane.add(percentList);
+               
         		//Mass text field setup
                 txtamu = new JTextField();
                 txtamu.setText(amuOutput);
-                txtamu.setBounds(248, 222, 116, 22);
+                txtamu.setBounds(333, 205, 116, 22);
                 contentPane.add(txtamu);
                 txtamu.setColumns(10);
                 
                 //Num of unique atoms setup
                 textField = new JTextField();
                 textField.setText("0");
-                textField.setBounds(248, 286, 116, 22);
+                textField.setBounds(333, 265, 116, 22);
                 contentPane.add(textField);
                 textField.setColumns(10);
                 
                 //Num of atoms setup
                 textField_1 = new JTextField();
                 textField_1.setText("0");
-                textField_1.setBounds(248, 352, 116, 22);
+                textField_1.setBounds(333, 325, 116, 22);
                 contentPane.add(textField_1);
                 textField_1.setColumns(10);
                 contentPane.setVisible(true);
@@ -296,8 +307,9 @@ public class ChemTools extends JFrame {
                 txtEnterChemicalFormula.addMouseListener(new MouseAdapter(){
                     @Override
                     public void mouseClicked(MouseEvent e){
-                        txtEnterChemicalFormula.setText("");
-                        contentPane.remove(list);
+                       txtEnterChemicalFormula.setText("");
+                       contentPane.remove(list);
+                       contentPane.remove(percentList);
                     }
                 });
         	}
@@ -315,24 +327,30 @@ public class ChemTools extends JFrame {
         contentPane.add(label);
         
         JLabel lblUniqueElements = new JLabel("Unique Elements");
-        lblUniqueElements.setFont(new Font("Century Gothic", Font.PLAIN, 19));
-        lblUniqueElements.setBounds(248, 257, 150, 30);
+        lblUniqueElements.setFont(new Font("Century Gothic", Font.PLAIN, 17));
+        lblUniqueElements.setBounds(320, 240, 150, 30);
         contentPane.add(lblUniqueElements);
 		
         JLabel lblAtomicMass = new JLabel("Atomic Mass");
-        lblAtomicMass.setFont(new Font("Century Gothic", Font.PLAIN, 19));
-        lblAtomicMass.setBounds(248, 193, 115, 30);
+        lblAtomicMass.setFont(new Font("Century Gothic", Font.PLAIN, 17));
+        lblAtomicMass.setBounds(347, 179, 108, 30);
         contentPane.add(lblAtomicMass);
         
         JLabel lblNumberOfAtoms = new JLabel("Number of Atoms");
-        lblNumberOfAtoms.setFont(new Font("Century Gothic", Font.PLAIN, 19));
-        lblNumberOfAtoms.setBounds(248, 321, 160, 30);
+        lblNumberOfAtoms.setFont(new Font("Century Gothic", Font.PLAIN, 17));
+        lblNumberOfAtoms.setBounds(310, 300, 160, 30);
         contentPane.add(lblNumberOfAtoms);
         
-        JLabel lblAtomsAmount = new JLabel("Atoms & Amount");
-        lblAtomsAmount.setFont(new Font("Century Gothic", Font.PLAIN, 19));
-        lblAtomsAmount.setBounds(12, 157, 160, 30);
+        JLabel lblAtomsAmount = new JLabel("Composition");
+        lblAtomsAmount.setFont(new Font("Century Gothic", Font.PLAIN, 17));
+        lblAtomsAmount.setBounds(12, 158, 104, 30);
         contentPane.add(lblAtomsAmount);
+        
+        JLabel lblByMass = new JLabel("% by Mass");
+        lblByMass.setFont(new Font("Century Gothic", Font.PLAIN, 17));
+        lblByMass.setBounds(146, 157, 92, 30);
+        contentPane.add(lblByMass);
+        
 	}
 	
 	//takes an element chunk e.g."C6" and splits it so it can be added to the list display
