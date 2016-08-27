@@ -247,11 +247,15 @@ public class ChemTools extends JFrame {
         		ArrayList<String> atoms = explode(splitElements);
         		double totalMass = 0.0;
         		
+        		ArrayList<Double> relativeMass = new ArrayList<Double>();
+        		
         		//The stage is set for generating output thanks to Ethan's general purpose explode method
         		for(int x = 0;  x< atoms.size(); x++){
         			String test = atoms.get(x);
         			if(test.equals("")){
         				//The index we're searching contained a duplicate of a previous element - we don't need to do anything
+        				atoms.remove(x);
+        				x--;
         				continue;
         			}
         			int number = 1; //There is at least 1 of this atom - each time we find another, we increase this
@@ -267,13 +271,20 @@ public class ChemTools extends JFrame {
         			
         			if(amu.containsKey(test)){
         				double mass = amu.get(test) * number;
-        				//TODO - Add code to generate % of each element by mass in compound, if desired
-        				//This sounds like a good idea
+        				relativeMass.add(mass);
         				totalMass += mass;
         			} else {
         				System.out.println("There is no such element as: " + test + ". Please check your input for errors.");
         			}
         		}
+        		
+        		//Gets the relative masses - we need to do this after the total mass is calculated
+        		for(int x = 0; x < relativeMass.size(); x++){
+        			double massPercentage = (relativeMass.get(x) / totalMass) * 100;
+        			String atom = atoms.get(x);
+        			percentList.add(atom + ": " + Double.toString(massPercentage) + "%");
+        		}
+        		
         		//Formats the output so it can be added to the JTextField display
         		String totalMassString = Double.toString(totalMass);
         		String amuOutput = totalMassString + "amu";
