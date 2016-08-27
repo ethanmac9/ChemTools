@@ -1,6 +1,7 @@
-//A.P. Chem. Chemical Formula Parsing Tools V0.1.5.1
+//A.P. Chem. Chemical Formula Parsing Tools V0.2
 //Code by Ethan MacDonald and Chuck8521
-//Currently the main functionality works, and the additional displays are yet to be implemented. 
+//Currently the main functionality, the atomic mass display, and the number of atoms display works, and the 
+//additional displays are yet to be implemented. 
 
 package chemTools;
 import java.util.*;
@@ -12,6 +13,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JTextField;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.DecimalFormat;
+
 import javax.swing.JFrame;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -22,6 +25,10 @@ import java.awt.Font;
 import javax.swing.JLabel;
 import java.awt.List;
 import java.awt.Color;
+import javax.swing.JList;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.LineBorder;
 
 public class ChemTools extends JFrame {
 	
@@ -150,7 +157,6 @@ public class ChemTools extends JFrame {
         amu = Collections.unmodifiableMap(mass);
 	}
 	
-	
 	private JPanel contentPane;
 	private JTextField txtamu;
 	private JTextField textField;
@@ -181,7 +187,6 @@ public class ChemTools extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e){ //removes the default text in the main text field setup
                 txtEnterChemicalFormula.setText("");
-                
             }
         });
         contentPane.setLayout(null);
@@ -208,86 +213,139 @@ public class ChemTools extends JFrame {
         		//Unfathomable witchcraft 
         		for (int i=0; i<formula.length(); i++) {
         		    if (Character.isUpperCase(formula.charAt(i))) {
-        		        if (!s.isEmpty()) {
+        		        if (!s.isEmpty() && isParsable(Character.toString(s.charAt(s.length() - 1)))) { 
         		            elements.add(s);
+        		        } else if (!s.isEmpty()){
+        		        	elements.add(s + "1");
         		        }
         		        s = "" + formula.charAt(i);
         		    } else {
         		        s += formula.charAt(i);
         		    }
         		}
-        		elements.add(s);   
+        		
+        		if(isParsable(Character.toString(s.charAt(s.length() - 1)))){
+        			elements.add(s); 
+        		} else {
+        			elements.add(s + "1");
+        		}   
 
+        		//New list for percent mass output
+        		final List percentList = new List();
+                percentList.setFont(new Font("Century Gothic", Font.PLAIN, 24));
+                percentList.setBackground(Color.WHITE);
+                percentList.setBounds(146, 193, 128, 262);
+        		
         		//Handles the list which contains the kind and amount of atoms
         		final List list = new List();
-                list.setFont(new Font("Century Gothic", Font.PLAIN, 25));
+                list.setFont(new Font("Century Gothic", Font.PLAIN, 24));
                 list.setBackground(Color.WHITE);
-                list.setBounds(12, 193, 145, 262);             
-                ArrayList<String[]> splitElements = new ArrayList<>();
+                list.setBounds(12, 193, 128, 262);  
                 
-                //Uses the splitElement method to break the blocks of e.g. "C6" in arrays of e.g. {"C","6"}
-        		for(int j=0; j<elements.size(); j++){
-        			String[] split = splitElement(elements.get(j));
-        			splitElements.add(split);	
-        		}
+                //Create for later
+        		double totalMass = 0.0;        		
+        		ArrayList<Double> relativeMass = new ArrayList<Double>();   		
         		
-        		//Uses the explode method to create one array list which contains all the individual atoms in the inputed formula
-        		//represented by their symbol. e.g. <{"H","2"},{"O","1"}> becomes <"H","H","O">
-        		ArrayList<String> atoms = explode(splitElements);
-        		double totalMass = 0.0;
-        		
-        		//The stage is set for generating output thanks to Ethan's general purpose explode method
-        		for(int x = 0;  x< atoms.size(); x++){
-        			String test = atoms.get(x);
+        		//We have an array of element characters followed by number
+        		for(int x = 0;  x< elements.size(); x++){
+        			String test = elements.get(x);
+        			
+        			//This used to be a duplicate, and we already analyzed it
         			if(test.equals("")){
-        				//The index we're searching contained a duplicate of a previous element - we don't need to do anything
+        				elements.remove(x);
+        				x--;
         				continue;
         			}
-        			int number = 1; //There is at least 1 of this atom - each time we find another, we increase this
-        			for(int j = x + 1; j < atoms.size(); j++){
-        				String test2 = atoms.get(j);
-        				if(test.equals(test2)){
-        					number++;
-        					atoms.set(j, "");//So this index is not analyzed when the outer for loop comes to it
+        			
+        			//Atom is the one or two chars that represent element. Num is the subscript number
+        			String atom = "";
+        			String num = "";
+        			
+        			boolean switched = false;
+        			for(int j = 0; j < test.length(); j++){
+        				String letter = Character.toString(test.charAt(j));
+        				if(switched){
+        					num += letter;
+        				} else {
+        					if(isParsable(letter)){
+        						switched = true;
+        						num = letter;
+        					} else {
+        						atom += letter;
+        					}
         				}
         			}
-        			//Adds the formatted output to the JList
-        			list.add(test + ": " + number);
         			
-        			if(amu.containsKey(test)){
-        				double mass = amu.get(test) * number;
-        				//TODO - Add code to generate % of each element by mass in compound, if desired
-        				//This sounds like a good idea
+        			int number = Integer.parseInt(num);
+        			for(int j = x + 1; j < elements.size(); j++){
+        				String test2 = elements.get(j);
+        				if(test2.contains(atom)){
+        					//This is a duplicate.
+        					test2 = test2.replace(atom, "");
+
+        					//Get the number and work with it - we know it has a number because we added understood 1's
+    						int secondNum = Integer.parseInt(test2);
+    						number += secondNum;
+        					
+        					elements.set(j, "");//So this index is not analyzed when the outer for loop comes to it        					
+        					
+        				}
+        			}
+        			
+        			//Adds the formatted output to the JList
+        			list.add(atom + ": " + number);
+        			
+        			if(amu.containsKey(atom)){
+        				double mass = amu.get(atom) * number;
+        				relativeMass.add(mass);
         				totalMass += mass;
         			} else {
-        				System.out.println("There is no such element as: " + test + ". Please check your input for errors.");
+        				System.out.println("There is no such element as: " + atom + ". Please check your input for errors.");
         			}
+        			
+        			//Sets the element entry equal to atom so no superflous numbers appear in the % mass box
+        			elements.set(x, atom);
+        			
         		}
+        		
+        		
+        		
+        		//Gets the relative masses - we need to do this after the total mass is calculated
+        		for(int x = 0; x < relativeMass.size(); x++){
+        			double massPercentage = (relativeMass.get(x) / totalMass) * 100;
+        			//Rounds to the nearest thousandth place
+        			DecimalFormat df = new DecimalFormat("##.###");
+        			String massPercentageRounded = df.format(massPercentage);
+        			String atom = elements.get(x);
+        			percentList.add(atom + ": " + massPercentageRounded + "%");
+        		}
+        		
         		//Formats the output so it can be added to the JTextField display
         		String totalMassString = Double.toString(totalMass);
         		String amuOutput = totalMassString + "amu";
         		
-        		//Adds the JList to the screen
+        		//Adds the Lists to the screen
         		contentPane.add(list);
-                
+        		contentPane.add(percentList);
+               
         		//Mass text field setup
                 txtamu = new JTextField();
                 txtamu.setText(amuOutput);
-                txtamu.setBounds(248, 222, 116, 22);
+                txtamu.setBounds(333, 205, 116, 22);
                 contentPane.add(txtamu);
                 txtamu.setColumns(10);
                 
                 //Num of unique atoms setup
                 textField = new JTextField();
                 textField.setText("0");
-                textField.setBounds(248, 286, 116, 22);
+                textField.setBounds(333, 265, 116, 22);
                 contentPane.add(textField);
                 textField.setColumns(10);
                 
                 //Num of atoms setup
                 textField_1 = new JTextField();
-                textField_1.setText("0");
-                textField_1.setBounds(248, 352, 116, 22);
+                textField_1.setText("bugged");
+                textField_1.setBounds(333, 325, 116, 22);
                 contentPane.add(textField_1);
                 textField_1.setColumns(10);
                 contentPane.setVisible(true);
@@ -296,8 +354,9 @@ public class ChemTools extends JFrame {
                 txtEnterChemicalFormula.addMouseListener(new MouseAdapter(){
                     @Override
                     public void mouseClicked(MouseEvent e){
-                        txtEnterChemicalFormula.setText("");
-                        contentPane.remove(list);
+                       txtEnterChemicalFormula.setText("");
+                       contentPane.remove(list);
+                       contentPane.remove(percentList);
                     }
                 });
         	}
@@ -315,48 +374,40 @@ public class ChemTools extends JFrame {
         contentPane.add(label);
         
         JLabel lblUniqueElements = new JLabel("Unique Elements");
-        lblUniqueElements.setFont(new Font("Century Gothic", Font.PLAIN, 19));
-        lblUniqueElements.setBounds(248, 257, 150, 30);
+        lblUniqueElements.setFont(new Font("Century Gothic", Font.PLAIN, 17));
+        lblUniqueElements.setBounds(320, 240, 150, 30);
         contentPane.add(lblUniqueElements);
 		
         JLabel lblAtomicMass = new JLabel("Atomic Mass");
-        lblAtomicMass.setFont(new Font("Century Gothic", Font.PLAIN, 19));
-        lblAtomicMass.setBounds(248, 193, 115, 30);
+        lblAtomicMass.setFont(new Font("Century Gothic", Font.PLAIN, 17));
+        lblAtomicMass.setBounds(347, 179, 108, 30);
         contentPane.add(lblAtomicMass);
         
         JLabel lblNumberOfAtoms = new JLabel("Number of Atoms");
-        lblNumberOfAtoms.setFont(new Font("Century Gothic", Font.PLAIN, 19));
-        lblNumberOfAtoms.setBounds(248, 321, 160, 30);
+        lblNumberOfAtoms.setFont(new Font("Century Gothic", Font.PLAIN, 17));
+        lblNumberOfAtoms.setBounds(310, 300, 160, 30);
         contentPane.add(lblNumberOfAtoms);
         
-        JLabel lblAtomsAmount = new JLabel("Atoms & Amount");
-        lblAtomsAmount.setFont(new Font("Century Gothic", Font.PLAIN, 19));
-        lblAtomsAmount.setBounds(12, 157, 160, 30);
+        JLabel lblAtomsAmount = new JLabel("Composition");
+        lblAtomsAmount.setFont(new Font("Century Gothic", Font.PLAIN, 17));
+        lblAtomsAmount.setBounds(12, 158, 104, 30);
         contentPane.add(lblAtomsAmount);
+        
+        JLabel lblByMass = new JLabel("% by Mass");
+        lblByMass.setFont(new Font("Century Gothic", Font.PLAIN, 17));
+        lblByMass.setBounds(146, 157, 92, 30);
+        contentPane.add(lblByMass);
+        
 	}
 	
-	//takes an element chunk e.g."C6" and splits it so it can be added to the list display
-	public static String[] splitElement(String e){
-		if(e.length()>1){
-			String[] split = e.split("(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)");
-			return split;
-		}
-		else{
-			String[] split = {e,"1"};
-			return split;
-		}
+	public static boolean isParsable(String input){
+	    boolean parsable = true;
+	    try{
+	        Integer.parseInt(input);
+	    }catch(NumberFormatException e){
+	        parsable = false;
+	    }
+	    return parsable;
 	}
-	//takes an arraylist that contains arrays of the element chunks created by splitElement 
-	public static ArrayList<String> explode(ArrayList<String[]> splitElements){	
-		ArrayList<String> atoms = new ArrayList<>();
-		for(int i=0; i<splitElements.size(); i++){
-			String timesString = splitElements.get(i)[1];
-			int times = Integer.parseInt(timesString);
-			for(int j=0; j<times; j++){
-				String element = splitElements.get(i)[0];
-				atoms.add(element);
-			}
-		}
-		return atoms;
-	}	
+	
 }
