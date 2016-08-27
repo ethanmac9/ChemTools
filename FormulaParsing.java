@@ -244,7 +244,9 @@ public class ChemTools extends JFrame {
                 
                 //Create for later
         		double totalMass = 0.0;        		
-        		ArrayList<Double> relativeMass = new ArrayList<Double>();   		
+        		ArrayList<Double> relativeMass = new ArrayList<Double>();   
+        		//For the total number atoms display box
+    			int totalNumAtoms = 0;
         		
         		//We have an array of element characters followed by number
         		for(int x = 0;  x< elements.size(); x++){
@@ -295,6 +297,9 @@ public class ChemTools extends JFrame {
         			//Adds the formatted output to the JList
         			list.add(atom + ": " + number);
         			
+        			//Adds the number of this atom to the number of total atoms for the display box
+        			totalNumAtoms += number;
+        			
         			if(amu.containsKey(atom)){
         				double mass = amu.get(atom) * number;
         				relativeMass.add(mass);
@@ -321,7 +326,9 @@ public class ChemTools extends JFrame {
         		}
         		
         		//Formats the output so it can be added to the JTextField display
-        		String totalMassString = Double.toString(totalMass);
+        		//Rounds to the nearest thousandth place - TODO possibly make this a method? Only two lines but still repeated
+    			DecimalFormat df = new DecimalFormat("##.###");
+    			String totalMassString = df.format(totalMass);
         		String amuOutput = totalMassString + "amu";
         		
         		//Adds the Lists to the screen
@@ -337,14 +344,14 @@ public class ChemTools extends JFrame {
                 
                 //Num of unique atoms setup
                 textField = new JTextField();
-                textField.setText("0");
+                textField.setText(String.valueOf(elements.size()));
                 textField.setBounds(333, 265, 116, 22);
                 contentPane.add(textField);
                 textField.setColumns(10);
                 
                 //Num of atoms setup
                 textField_1 = new JTextField();
-                textField_1.setText("bugged");
+                textField_1.setText(String.valueOf(totalNumAtoms));
                 textField_1.setBounds(333, 325, 116, 22);
                 contentPane.add(textField_1);
                 textField_1.setColumns(10);
