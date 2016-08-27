@@ -1,4 +1,4 @@
-//A.P. Chem. Chemical Formula Parsing Tools V0.1.6
+//A.P. Chem. Chemical Formula Parsing Tools V0.2
 //Code by Ethan MacDonald and Chuck8521
 //Currently the main functionality, the atomic mass display, and the number of atoms display works, and the 
 //additional displays are yet to be implemented. 
@@ -13,6 +13,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JTextField;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.DecimalFormat;
+
 import javax.swing.JFrame;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -242,7 +244,7 @@ public class ChemTools extends JFrame {
                 
                 //Create for later
         		double totalMass = 0.0;        		
-        		ArrayList<Double> relativeMass = new ArrayList<Double>();
+        		ArrayList<Double> relativeMass = new ArrayList<Double>();   		
         		
         		//We have an array of element characters followed by number
         		for(int x = 0;  x< elements.size(); x++){
@@ -311,8 +313,11 @@ public class ChemTools extends JFrame {
         		//Gets the relative masses - we need to do this after the total mass is calculated
         		for(int x = 0; x < relativeMass.size(); x++){
         			double massPercentage = (relativeMass.get(x) / totalMass) * 100;
+        			//Rounds to the nearest thousandth place
+        			DecimalFormat df = new DecimalFormat("##.###");
+        			String massPercentageRounded = df.format(massPercentage);
         			String atom = elements.get(x);
-        			percentList.add(atom + ": " + Double.toString(massPercentage) + "%");
+        			percentList.add(atom + ": " + massPercentageRounded + "%");
         		}
         		
         		//Formats the output so it can be added to the JTextField display
@@ -339,8 +344,7 @@ public class ChemTools extends JFrame {
                 
                 //Num of atoms setup
                 textField_1 = new JTextField();
-                String numAtoms = (Integer.toString(elements.size()));
-                textField_1.setText(numAtoms);
+                textField_1.setText("bugged");
                 textField_1.setBounds(333, 325, 116, 22);
                 contentPane.add(textField_1);
                 textField_1.setColumns(10);
