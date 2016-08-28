@@ -1,4 +1,4 @@
-//A.P. Chem. Chemical Formula Parsing Tools V0.2
+//A.P. Chem. Chemical Formula Parsing Tools V0.3
 //Code by Ethan MacDonald and Chuck8521
 //Currently the main functionality, the atomic mass display, and the number of atoms display works, and the 
 //additional displays are yet to be implemented. 
@@ -204,13 +204,13 @@ public class ChemTools extends JFrame {
         		//Gets the user's input
         		String inputString = txtEnterChemicalFormula.getText();
         		
-        		//Parses the formula into blocks of element and number. Single atoms are not yet given a 1
-        		Scanner sc = new Scanner(System.in);
+        		//Parses the formula into blocks of element and number. Single atoms are given a 1
+        		//Scanner sc = new Scanner(System.in); Possible resource leak - I don't think this is used
         		ArrayList<String> elements = new ArrayList<>();
         		String formula = inputString;
         		String s = "";
         		
-        		//Unfathomable witchcraft 
+        		//Completely fathomable witchcraft 
         		for (int i=0; i<formula.length(); i++) {
         		    if (Character.isUpperCase(formula.charAt(i))) {
         		        if (!s.isEmpty() && isParsable(Character.toString(s.charAt(s.length() - 1)))) { 
@@ -219,16 +219,91 @@ public class ChemTools extends JFrame {
         		        	elements.add(s + "1");
         		        }
         		        s = "" + formula.charAt(i);
+        		    } else if(formula.charAt(i) == '('){
+        		    	
+        		    	//We have a polyatomic ion. First, finalize the previous element
+        		    	if (!s.isEmpty() && isParsable(Character.toString(s.charAt(s.length() - 1)))) { 
+        		            elements.add(s);
+        		        } else if (!s.isEmpty()){
+        		        	elements.add(s + "1");
+        		        }
+        		        s = "";
+        		    	
+        		        //Now, start analyzing the polyatomic part
+        		    	String ion = "";
+        		    	String ionNum = "";
+        		    	boolean postIon = false;
+        		    	for(int x = i + 1; x < formula.length(); x++){
+        		    		if(formula.charAt(x) == ')'){
+        		    			//The ion has ended. Check if there's a number after it.
+        		    			postIon = true;
+        		    		} else if(postIon){
+        		    			if(isParsable(String.valueOf(formula.charAt(x)))){
+        		    				//We have a number. Add it.
+        		    				ionNum += formula.charAt(x);
+        		    			} else {
+        		    				//The ion has been completely parsed. The loop is over.
+        		    				break;
+        		    			}
+        		    		} else {
+        		    			ion += formula.charAt(x);
+        		    		}
+        		    	}
+        		    	
+        		    	if(ionNum.equals("")){
+        		    		//There is only one ion.
+        		    		ionNum = "1";
+        		    	}
+        		    	
+        		    	//We have the information we need. Distribute the ionNum over all nums and then pass values to the array
+        		    	String toBeAdded = "";
+        		    	String tempNumber = "";
+        		    	for(int x = 0; x < ion.length(); x++){
+        		    		if(Character.isUpperCase(ion.charAt(x))){
+        		    			if (!toBeAdded.isEmpty() && !tempNumber.equals("")) { 
+        		    				//Has a number after it. Multiply whatever it is by the ionNum
+        		    				int actualNumber = Integer.parseInt(tempNumber) * Integer.parseInt(ionNum);
+                		            elements.add(toBeAdded + actualNumber);
+                		        } else if (!toBeAdded.isEmpty()){
+                		        	//No number after it, so ionNum * 1 still equals ionNum
+                		        	elements.add(toBeAdded + ionNum);
+                		        }
+                		        toBeAdded = "" + ion.charAt(x);
+                		        tempNumber = "";
+        		    		} else if (isParsable(String.valueOf(ion.charAt(x)))){
+        		    			//There is a number after the atom. Keep it so it can be multiplied by the ionNum
+        		    			tempNumber += ion.charAt(x);
+        		    		} else {
+                		        toBeAdded += ion.charAt(x);
+                		    }
+        		    	}
+        		    	
+        		    	//Last case will not trigger inside the loop
+        		    	if (!toBeAdded.isEmpty() && !tempNumber.equals("")) { 
+		    				//Has a number after it. Multiply whatever it is by the ionNum
+		    				int actualNumber = Integer.parseInt(tempNumber) * Integer.parseInt(ionNum);
+        		            elements.add(toBeAdded + actualNumber);
+        		        } else {
+        		        	//No number after it, so ionNum * 1 still equals ionNum
+        		        	elements.add(toBeAdded + ionNum);
+        		        }
+        		    	
+        		    	//Modifies the iterator so it doesn't look at any part of the polyatomic ion again by mistake
+        		    	i = i + ion.length() + ionNum.length() + 1;
+        		    	
         		    } else {
         		        s += formula.charAt(i);
         		    }
         		}
         		
-        		if(isParsable(Character.toString(s.charAt(s.length() - 1)))){
-        			elements.add(s); 
-        		} else {
-        			elements.add(s + "1");
-        		}   
+        		//Add last case (if it exists) because it is not processed during loop
+        		if(!s.equals("")){
+        			if(isParsable(Character.toString(s.charAt(s.length() - 1)))){
+            			elements.add(s); 
+            		} else {
+            			elements.add(s + "1");
+            		} 
+        		}  
 
         		//New list for percent mass output
         		final List percentList = new List();
@@ -308,7 +383,7 @@ public class ChemTools extends JFrame {
         				System.out.println("There is no such element as: " + atom + ". Please check your input for errors.");
         			}
         			
-        			//Sets the element entry equal to atom so no superflous numbers appear in the % mass box
+        			//Sets the element entry equal to atom so no superfluous numbers appear in the % mass box
         			elements.set(x, atom);
         			
         		}
