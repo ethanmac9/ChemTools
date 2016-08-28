@@ -210,7 +210,7 @@ public class ChemTools extends JFrame {
         		String formula = inputString;
         		String s = "";
         		
-        		//Completely fathomable witchcraft 
+        		//Completely fathomable-ish witchcraft 
         		for (int i=0; i<formula.length(); i++) {
         		    if (Character.isUpperCase(formula.charAt(i))) {
         		        if (!s.isEmpty() && isParsable(Character.toString(s.charAt(s.length() - 1)))) { 
