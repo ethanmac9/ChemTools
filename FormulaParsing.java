@@ -3,7 +3,7 @@
 //Currently the main functionality, the atomic mass display, and the number of atoms display works, and the 
 //additional displays are yet to be implemented. 
 
-package chemTools;
+package ChemTools;////////////////////////////////////////////////////////////////////////////////
 import java.util.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -212,6 +212,10 @@ public class ChemTools extends JFrame {
         		
         		//Completely fathomable-ish witchcraft 
         		for (int i=0; i<formula.length(); i++) {
+        			if(formula.charAt(i) == ')'){
+        				//Random parenthesis, possibly a typo. Just ignore it
+        				continue;
+        			}
         		    if (Character.isUpperCase(formula.charAt(i))) {
         		        if (!s.isEmpty() && isParsable(Character.toString(s.charAt(s.length() - 1)))) { 
         		            elements.add(s);
@@ -220,6 +224,12 @@ public class ChemTools extends JFrame {
         		        }
         		        s = "" + formula.charAt(i);
         		    } else if(formula.charAt(i) == '('){
+        		    	
+        		    	//Check for the user being an idiot (or a developer)
+        		    	if(formula.charAt(i + 1) == ')'){
+        		    		//() was entered, just skip it.
+        		    		i += 1;
+        		    	}
         		    	
         		    	//We have a polyatomic ion. First, finalize the previous element
         		    	if (!s.isEmpty() && isParsable(Character.toString(s.charAt(s.length() - 1)))) { 
@@ -254,11 +264,16 @@ public class ChemTools extends JFrame {
         		    		//There is only one ion.
         		    		ionNum = "1";
         		    	}
+
         		    	
         		    	//We have the information we need. Distribute the ionNum over all nums and then pass values to the array
         		    	String toBeAdded = "";
         		    	String tempNumber = "";
         		    	for(int x = 0; x < ion.length(); x++){
+        		    		if(ion.charAt(x) == '('){
+        		    			//Ha ha. Nested parenthesis. Very funny, yet chemically incorrect. Let's ignore this
+        		    			continue;        		    			
+        		    		}
         		    		if(Character.isUpperCase(ion.charAt(x))){
         		    			if (!toBeAdded.isEmpty() && !tempNumber.equals("")) { 
         		    				//Has a number after it. Multiply whatever it is by the ionNum
@@ -283,7 +298,7 @@ public class ChemTools extends JFrame {
 		    				//Has a number after it. Multiply whatever it is by the ionNum
 		    				int actualNumber = Integer.parseInt(tempNumber) * Integer.parseInt(ionNum);
         		            elements.add(toBeAdded + actualNumber);
-        		        } else {
+        		        } else if (!toBeAdded.isEmpty()){
         		        	//No number after it, so ionNum * 1 still equals ionNum
         		        	elements.add(toBeAdded + ionNum);
         		        }
@@ -369,9 +384,6 @@ public class ChemTools extends JFrame {
         				}
         			}
         			
-        			//Adds the formatted output to the JList
-        			list.add(atom + ": " + number);
-        			
         			//Adds the number of this atom to the number of total atoms for the display box
         			totalNumAtoms += number;
         			
@@ -379,6 +391,8 @@ public class ChemTools extends JFrame {
         				double mass = amu.get(atom) * number;
         				relativeMass.add(mass);
         				totalMass += mass;
+        				//Adds the formatted output to the JList
+            			list.add(atom + ": " + number);
         			} else {
         				System.out.println("There is no such element as: " + atom + ". Please check your input for errors.");
         			}
