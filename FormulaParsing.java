@@ -3,7 +3,7 @@
 //Currently the main functionality, the atomic mass display, and the number of atoms display works, and the 
 //additional displays are yet to be implemented. 
 
-package ChemTools;////////////////////////////////////////////////////////////////////////////////
+package chemTools;
 import java.util.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
