@@ -1,7 +1,6 @@
 //A.P. Chem. Chemical Formula Parsing Tools V0.3
 //Code by Ethan MacDonald and Chuck8521
-//Currently the main functionality, the atomic mass display, and the number of atoms display works, and the 
-//additional displays are yet to be implemented
+//Currently all functionality is implemented. 
 
 package chemTools;
 import java.util.*;
